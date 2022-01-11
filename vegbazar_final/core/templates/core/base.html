@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'css/core.css' %}" />
+    {% block core_css%} {% endblock%}
+    <title>{% block title %} I {% endblock%}</title>
+  </head>
+  <body>
+    <!---navbar start-->
+
+    <div class="navbar navbar-expand-lg navbar-style navbar-dark fixed-top">
+      <div class="container">
+        <a href="{% url 'homepage' %}" class="navbar-brand font-weight-bold">
+          <img
+            src="{% static 'images/logo-1.jpg'%}"
+            style="width: 100px; height: 100px"
+            class="m-2"
+            data-aos="fade-down"
+          />Veg Bazar
+        </a>
+
+        <button
+          type="button"
+          class="navbar-toggler"
+          data-toggle="collapse"
+          data-target="#mymenu"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mymenu">
+          <!---search box-->
+          <form class="form-inline" method="GET" action="/searchbox">
+            <input
+              class="form-control ml-sm-4 mr-sm-2"
+              name="query"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button
+              class="btn btn-outline-danger my-2 my-sm-0"
+              name="search_btn"
+              type="submit"
+            >
+              <b>Search</b>
+            </button>
+          </form>
+
+          <!----search box ends-->
+          <ul class="nav navbar-nav ml-auto font-weight-bold">
+            <li class="navbar-item">
+              <a href="{% url 'homepage' %}" class="nav-link menu"> Home </a>
+            </li>
+            <li class="navbar-item">
+              <a href="{% url 'vegpage' %}" class="nav-link menu">
+                Vegetable
+              </a>
+            </li>
+            <li class="navbar-item">
+              <a href="{% url 'fruitpage' %}" class="nav-link menu"> Fruits </a>
+            </li>
+            <!---    <li class="navbar-item">
+              <a href="{% url 'offer' %}" class="nav-link menu"> offers </a>
+            </li>-->
+            <li class="navbar-item">
+              <a href="{% url 'profile' %}" class="nav-link menu"> Profile </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row text-center" style="width: 300px">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown" style="list-style: None">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i
+              class="fa fa-user"
+              aria-hidden="true"
+              style="color: white; size: 100px"
+              ><h5>{{user}}</h5></i
+            >
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'orders' %}">Your Orders</a>
+            <a class="dropdown-item" href="{% url 'changepass' %}"
+              >Change Password</a
+            >
+            <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+          </div>
+        </li>
+
+        {%else%}
+        <button
+          type="button"
+          class="btn btn-danger mx-auto"
+          style="width: 40%"
+          data-target="#signup"
+          data-toggle="modal"
+        >
+          <b>SignUp</b>
+        </button>
+
+        <a
+          href="{% url 'loginpage'%}"
+          type="button"
+          class="btn btn-danger mx-auto"
+          style="width: 40%"
+        >
+          <b>Log In</b>
+        </a>
+        {% endif %}
+      </div>
+      <div style="width: 300px; float: right">
+        <a
+          href="{% url 'cartpage' %}"
+          name="cart_btn"
+          class="btn btn-light text-dark mt-auto ml-auto"
+          style="width: 60%; float: right"
+        >
+          <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+          <label> <b>Cart</b> </label>
+          {% if request.session.cart.keys %}
+          <span class="badge badge-warning" style="font-size: 15px"
+            ><b>{{request.session.cart.keys|length}}</b></span
+          >
+          {% endif %}
+        </a>
+      </div>
+    </div>
+
+    <!---navbar end-->
+
+    <!---This is for main-content-block-->
+    {% block main_content %} {% endblock%}
+
+    <!-----main-content block ends-->
+
+    <!--footer start-->
+    <footer class="container-fluid" style="clear: both" data-aos="fade-up">
+      <div class="footer-style row">
+        {% for x in footer_context %}
+        <div class="left box text-center col-lg-4 col-md-6">
+          <h2 style="color: red" class="font-weight-bold py-2">About Us</h2>
+          <div class="content p-2">
+            <p>
+              {{x.about_us|truncatewords:35}}<a
+                href="{% url 'aboutus'%}"
+                type="button"
+                class="btn btn-link"
+                >Know More</a
+              >
+            </p>
+            <div class="social">
+              <a href="#" class="ml-2"
+                ><span
+                  class="fab fa-facebook-f mr-3 text-light thumbnail"
+                ></span
+              ></a>
+              <a href="#" class="ml-2"
+                ><span class="fab fa-twitter mr-3 text-light thumbnail"></span
+              ></a>
+              <a href="#" class="ml-2"
+                ><span class="fab fa-instagram mr-3 text-light thumbnail"></span
+              ></a>
+              <a href="#" class="ml-2"
+                ><span class="fab fa-youtube text-light thumbnail"></span
+              ></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="center box text-center pt-10 col-lg-4 col-md-6">
+          <h2 style="color: red" class="font-weight-bold py-2">Address</h2>
+          <div class="content">
+            <div class="place">
+              <span class="fas fa-map-marker-alt mr-2 thumbnail"></span>
+              <span class="text">{{x.address}}</span>
+            </div>
+            <div class="phone">
+              <span class="fas fa-phone-alt mr-2 thumbnail"></span>
+              <span class="text">{{x.phone}}</span>
+            </div>
+            <div class="email">
+              <span class="fas fa-envelope mr-2 thumbnail"></span>
+              <span class="text">{{x.email}}</span>
+            </div>
+            {% endfor%}
+            <div class="m-3 mt-5">
+              <a
+                href="{% url 'adminpage' %}"
+                type="button"
+                class="btn btn-outline-light text-center"
+                style="width: 60%"
+                ><b>Admin Panel</b></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="right box text-center pt-10 col-lg-4">
+          <h2 style="color: red" class="font-weight-bold py-2">Contact Us</h2>
+          <div class="content">
+            <div class="mx-5">
+              <form method="POST" action="{% url 'contact' %}">
+                {% csrf_token %} {% if message %}
+                <div class="alert {{color}} mx-5">{{message}}</div>
+                {% endif %}
+
+                <div class="email align-center">
+                  <div class="text mt-3">Email *</div>
+                  <input
+                    id="contact_mail"
+                    type="email"
+                    class="form-control"
+                    name="contact_email"
+                    required
+                  />
+                </div>
+                <div class="msg">
+                  <div class="text mt-3">Message *</div>
+                  <textarea
+                    id="contact_msg"
+                    class="form-control"
+                    name="contact_msg"
+                    required
+                  ></textarea>
+                </div>
+                <div class="btn" style="width: 80%">
+                  <button
+                    name="contact_send_btn"
+                    id="contact_send"
+                    type="submit"
+                    class="btn btn-danger"
+                    style="width: 35%"
+                  >
+                    Send
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!---footer ends-->
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init({ duration: 2300, offset: 120, duration: 2300 });
+    </script>
+
+    <script>
+      function check_contact() {
+        let contact_email = $("#contact_email").val();
+        let contact_msg = $("#contact_msg").val();
+        console.log(contact_email);
+
+        if (contact_email & contact_msg) {
+          $("#contact_email").css("border", "1px solid green");
+          $("#contact_msg").css("border", "1px solid green");
+          // $("#pas").removeClass("alert alert-danger").addClass("alert alert-success");
+          // $("#cpas").removeClass("alert alert-danger").addClass("alert alert-success");
+          $("#contact_send").removeAttr("disabled");
+        } else {
+          $("#contact_email").css("border", "1px solid red");
+          $("#contact_msg").css("border", "1px solid red");
+          // $("#pas").removeClass("alert alert-success").addClass("alert alert-danger");
+          // $("#cpas").removeClass("alert alert-success").addClass("alert alert-danger");
+
+          $("#contact_send").attr("disabled", "disabled");
+        }
+      }
+    </script>
+
+    {% block core_js %} {% endblock %}
+  </body>
+</html>

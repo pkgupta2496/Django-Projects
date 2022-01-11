@@ -1,0 +1,110 @@
+{% extends 'core/base.html'%} {% load static %} {% load cart %}
+{% block title %} Vegetable page {%endblock %} {% block core_css%}
+<style>
+  .img-jmbo {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url("{% static 'images/header.jpg' %}");
+  }
+</style>
+
+{% endblock %} 
+{% block main_content %}
+
+<!-----main-content-block starts---->
+
+<div class="container" style="margin-top: 150px">
+  <div class="jumbotron img-jmbo m-2">
+    <h1
+      class="font-weight-bold justify-content-center text-right"
+      style="color: darkgreen; font-size: 4vw"
+    >
+      Vegetable
+    </h1>
+  </div>
+
+  <div class="row">
+    {% for x in veg_product%}
+    <div class="col col-md-6 col-sm-12 rounded border border-dark" id =""  
+         data-aos="flip-down" data-aos-offset="200">
+      <div class="row">
+        
+        <div class="col col-xl-6 col-md-12 border align-content-center">
+          <img
+            src="{{ x.product_img.url }}"
+            alt=""
+            style="width: 200px; height: 200px;"
+            class="m-2"
+          />
+        </div>
+
+        <div class="col col-xl-6 col-md-12 align-content-center">
+          <h3>{{x.product_name}}</h3>
+          <div class="mt-5">
+          <h4>{{x.product_price}}Rs/kg</h4>
+        </div>
+
+      {% if not x|is_in_cart:request.session.cart %}
+          <form action="" method="POST">
+            {% csrf_token %}
+            <input hidden type="text" name="product_id" id="" value="{{x.id}}">
+            <input hidden type="text" name="username" id="" value="{{user}}">
+            
+            <div class="col-md-12 my-4 mt-5">
+            {% if x.product_available_quantity > 0 %}
+              <button class="btn btn-Signup btn-danger" name="add_to_cart_btn" type= "submit" style="width: 100%;">Add To Cart</button>
+            {% else %}
+              <span class=" btn btn-danger" style="width:100%;">Not Available</span>
+            {% endif %}
+
+            </div>
+            
+          </form>
+          
+        {% else %}  
+          
+          <div class="row col col-md-12 my-4 mt-5  ml-1">
+        
+          <form action="" method="POST">
+            {% csrf_token %}
+            <input hidden type="text" name="product_id" id="" value="{{x.id}}">
+            <input hidden type="text" name="username" id="" value="{{user}}">
+            <button type="submit" name="decrease_quantity_btn" class="btn btn-block btn-danger">
+              <i class="fa fa-minus" aria-hidden="true"></i>
+            </button> 
+          </form>
+          <div class="text-center col "><b>{{x|quantity_counter:request.session.cart}} in cart</b></div>
+            <form action="" method="POST">
+              {% csrf_token %}
+              <input hidden type="text" name="product_id" id="" value="{{x.id}}">
+              <input hidden type="text" name="username" id="" value="{{user}}">
+              <button type="submit" name="increase_quantity_btn" class="btn btn-block btn-danger">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        
+        {% endif%}
+        </div>   
+        
+      </div>
+    </div>
+    {% endfor %}
+
+    
+  </div>
+</div>
+
+
+
+{% block core_js %}
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+{% endblock%}
+<!----main-content-end-->
+
+
+
+
+
+
+{% endblock%}

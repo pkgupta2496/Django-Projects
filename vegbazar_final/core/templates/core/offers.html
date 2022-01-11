@@ -1,0 +1,42 @@
+{% extends 'core/base.html'%} {% load static %} {% block title %} Offers page
+{%endblock %} {% block main_content %}
+
+<div class="container" style="margin-top: 160px">
+  <h1 class="Display-1 my-5">Offers</h1>
+  <hr />
+  <div class="row">
+    {% for item in offers %}
+    <div class="col col-lg-4 col-md-6" style="margin-top: 10px">
+      <div
+        class="card"
+        style="
+          width: 18rem;
+          box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        "
+      >
+        <div class="text-center">
+          <img
+            class="card-img-top"
+            src="{{item.photo.url}}"
+            alt="Card image cap"
+            style="width: 225px; height: 225px"
+          />
+        </div>
+        <div class="card-body">
+          <h5><i>Coupen code:</i></h5>
+          <p class="card-title text-right">{{item.name}}</p>
+
+          <div>
+            <label
+              ><h5><i>discount :</i></h5>
+            </label>
+            <p class="card-text text-right">{{item.discount}}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor%}
+    </div>
+  </div>
+</div>
+{% endblock%}

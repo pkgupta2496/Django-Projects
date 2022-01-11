@@ -1,0 +1,181 @@
+{% extends 'core/base.html'%} 
+{% load cart %}
+{% load static %} 
+{% block title %} Cart Page {%endblock %} 
+{% block main_content %}
+
+<div class= 'container-fluid col-10 border rounded p-4' style="margin-top: 280px;">
+    <p class="display-2 pl-4 m-4 "> Your Cart </p> <hr>  
+    
+      <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;" >S.No.</th>
+                <th scope="col" style="text-align: center;">Product Image</th>
+                <th scope="col" style="text-align: center;">Product Id</th>
+                <th scope="col" style="text-align: center;">Product Name</th>
+                <th scope="col" style="text-align: center;">Product Price</th>
+                <th scope="col" style="text-align: center;">Quantity</th>
+                
+                <th scope="col" style="text-align: center;">Total</th>
+                <th scope="col" style="text-align: center;">Remove</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+            {% for item in carted_products%}    
+              <tr>
+                <th scope=" row"style="text-align: center;">{{forloop.counter}}</th>
+                <td style="text-align: center;"> <img src="{{item.product_img.url}}" alt="" style="width: 60px; height:60px;"></td>
+                <td style="text-align: center;">{{item.id}}</td>
+                <td style="text-align: center;">{{item.product_name}}</td>
+                <td style="text-align: center;">₹ {{item.product_price}}</td>
+                <td style="text-align: center;">
+                  <div class="row col col-md-12 ml-1">
+                  <form method="POST" action="{% url 'quantitymanager' %}">
+                  {% csrf_token %}
+                  <input hidden type="text" name="product_id" id="" value="{{item.id}}">
+                  <input hidden type="text" name="username" id="" value="{{user}}">
+                  <button type="submit" name="decrease_quantity_btn" class="btn btn-block btn-danger">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                  </button> 
+                  </form>
+                <div class="text-center col "><b>{{item|quantity_counter:request.session.cart}} Kg</b></div>
+                  <form action="{% url 'quantitymanager' %}" method="POST">
+                    {% csrf_token %}
+                    <input hidden type="text" name="product_id" id="" value="{{item.id}}">
+                    <input hidden type="text" name="username" id="" value="{{user}}">
+                    <button type="submit" name="increase_quantity_btn" class="btn btn-block btn-danger">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </form></td>
+                </div>
+                <td class="text-center" style="text-align: center;">₹ {{ item|total_price:request.session.cart }}</td>
+              
+                  <td style="text-align: center;"> <a href="{% url 'removeitem' id=item.id %}" class=" btn btn-danger fa fa-trash"></a></td>
+                
+              </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="6" style="text-align: center;"> Total </th>
+                    <th colspan="" style="text-align: center;"> 
+                        {{ carted_products|total_cart_price:request.session.cart }} </th>
+                </tr>
+            </tfoot>
+      </table>
+    
+      {% if messages %}
+        {% for message in messages %}
+            <p {% if message.tags %} class=" col-8 alert-{{message.tags}} p-2" {% endif %} style="border-radius: 10px;" >
+              {{message}}
+            </p>
+        {% endfor %}
+      {% endif %}
+   
+    <div>
+      
+    </div>
+  {% if request.session.cart.keys %}  
+    <div class="m-3 p-3">
+  
+      <a href="#" class="btn btn-info border rounded col-lg-3 float-right" data-toggle="modal" data-target="#checkout"><b> Check Out </b> </a>
+    </div>
+  {% endif %}
+    <!-------modal for check out starts-->
+    <div class="modal fade" id="checkout" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-dark">
+            <h5 class="modal-title" id="exampleModalLabel" style="color: white;">Required Information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="" style="color:white">&times;</span>
+            </button>
+          </div>
+          <!----Required info form-->
+        <form action="" method="POST" onsubmit="return validate()">  
+          {% csrf_token %}
+          <input hidden type="text" name='username' value="{{user}}">
+          <div class="modal-body">
+            <div class="form-group">
+              <label
+                ><i class="fas fa-mobile-alt"></i></i>
+                <b>Mobile :</b></label
+              >
+              <input
+                type="text"
+                id="id_mobile"
+                name="mobile"
+                class="form-control"
+                required
+              />
+              <span id="message"></span>
+            </div>
+            <hr/>
+            <div class="form-group">
+              <label
+                ><i class="fas fa-map-marker-alt"></i>
+                <b> Address :</b></label
+              >
+              <input
+                type="text"
+                id="id_address"
+                name="address"
+                class="form-control"
+                required
+              />
+            </div>
+          </div>
+
+          
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="Submit" name="check_out_btn" class="btn btn-outline-info col-lg-5 "><b>Check Out</b></button>
+          </div>
+          
+        </form>
+        <!----Required info form ends-->
+        </div>
+      </div>
+    </div>
+
+
+
+    <!------modal ends-->
+</div>
+{% endblock %}
+
+
+{% block core_js %}
+<script>
+  function validate()
+  {
+    var a = document.getElementById("id_mobile").value;
+    if(a=="")
+    {
+      document.getElementById("message").innerHTML="** Please fill Mobile Number";
+      return false;
+    } 
+    if(isNaN(a))
+    {
+    document.getElementById("message").innerHTML="** Enter only Numeric Values";
+    return false;
+    }
+    if(a.length>10 || a.length<10)
+    {
+      document.getElementById("message").innerHTML = "Mobile Number must be 10 digit";
+      return false;
+    }
+    if((a.charAt(0)!=9) && (a.charAt(0)!=8) && (a.charAt(0)!=7))
+    {
+      document.getElementById("message").innerHTML = "Mobile Number must start with 9, 8 or 7";
+      return false;
+    }
+  }
+
+</script>
+
+{% endblock core_js %}
+</html>

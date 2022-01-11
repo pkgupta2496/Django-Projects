@@ -1,0 +1,59 @@
+{% extends 'core/base.html'%} {% load static %} {% block title %} Orders
+{%endblock %} {% block main_content %}
+<div class="container-fluid" style="margin-top: 160px">
+  <div class="m-5">
+    {% if orders%}
+    <h1 class="Display-1 my-5">Your Orders :</h1>
+    <hr />
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" style="text-align: center">S.No.</th>
+          <th scope="col" style="text-align: center">Order Id</th>
+          <th scope="col" style="text-align: center">Product Image</th>
+          <th scope="col" style="text-align: center">Product Name</th>
+          <th scope="col" style="text-align: center">Product Price</th>
+          <th scope="col" style="text-align: center">Quantity</th>
+          <th scope="col" style="text-align: center">Total</th>
+          <th scope="col" style="text-align: center">Order Date</th>
+
+          <th scope="col" style="text-align: center">Address</th>
+          <th scope="col" style="text-align: center">Mobile</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for order in orders%}
+        <tr>
+          <th scope=" row" style="text-align: center">{{forloop.counter}}</th>
+          <td style="text-align: center">{{order.order_id}}</td>
+          <td style="text-align: center">
+            <img
+              src="{{order.product_img.url}}"
+              alt=""
+              style="width: 60px; height: 60px"
+            />
+          </td>
+          <td style="text-align: center">{{order.product_name}}</td>
+          <td style="text-align: center">₹ {{order.product_price}}</td>
+          <td class="text-center" style="text-align: center">
+            {{order.quantity}} Kg
+          </td>
+          <td style="text-align: center">₹ {{order.total_price}}</td>
+          <td style="text-align: center">{{order.order_date}}</td>
+
+          <td style="text-align: center">{{order.address}}</td>
+          <td style="text-align: center">{{order.mobile}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {%else%}
+    <div style="margin: 200px; padding: 110px">
+      <h1>No Orders till now...!</h1>
+    </div>
+    {%endif%}
+  </div>
+</div>
+{%endblock%}

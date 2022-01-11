@@ -1,0 +1,38 @@
+{% extends 'core/base.html'%} {% load static %} {% block title %} AboutUs page
+{%endblock %} {% block main_content %}
+
+<div class="container" style="margin-top: 160px">
+  <h1 class="Display-1 my-5">About Us</h1>
+  <hr />
+  <div class="row">
+    <div class="col-lg-7" style = "">
+      {% for x in footer_context%}
+      <p
+        class="p-4"
+        style="
+          font-family: Georgia, 'Times New Roman', Times, serif;
+          text-align: justify;
+          text-justify: inter-word;
+        "
+      >
+        {{x.about_us}}
+      </p>
+
+      
+      {%endfor%}
+    </div>
+    <div
+      class="col-lg-5 text-center border"
+      style="
+        text-justify: inter-word;
+        margin: auto;
+        box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      "
+    >
+      <img src="{% static 'images/logo-1.jpg'%}" alt="" />
+    </div>
+  </div>
+</div>
+
+{%endblock%}
